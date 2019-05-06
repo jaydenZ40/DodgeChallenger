@@ -33,9 +33,11 @@ public class PlayerConnection : NetworkBehaviour
     void CmdSpawnMyUnit()
     {
         int n = ++LevelManager.playerNum;
-        GameObject go = n == 1 ? Instantiate(PlayerUnitPrefab, Vector3.left * 7, Quaternion.identity)
+        GameObject go = n == 1 ? Instantiate(PlayerUnitPrefab, Vector3.zero, Quaternion.identity)
             : Instantiate(PlayerUnitPrefab, Vector3.right * 7, Quaternion.identity);
         myPlayerUnit = go;
         NetworkServer.SpawnWithClientAuthority(go, connectionToClient);
+        CameraController.instance.FollowPlayer(myPlayerUnit);
+        myPlayerUnit.name = "Player" + LevelManager.playerNum.ToString();
     }
 }
