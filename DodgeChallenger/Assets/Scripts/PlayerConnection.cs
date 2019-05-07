@@ -33,9 +33,10 @@ public class PlayerConnection : NetworkBehaviour
     void CmdSpawnMyUnit()
     {
         int n = ++LevelManager.playerNum;
-        GameObject go = n == 1 ? Instantiate(PlayerUnitPrefab, Vector3.left * 7, Quaternion.identity)
-            : Instantiate(PlayerUnitPrefab, Vector3.right * 7, Quaternion.identity);
+        GameObject go = n == 1 ? Instantiate(PlayerUnitPrefab, Vector3.left * 8.5f, Quaternion.identity)
+            : Instantiate(PlayerUnitPrefab, Vector3.right * 8, Quaternion.identity);
         myPlayerUnit = go;
         NetworkServer.SpawnWithClientAuthority(go, connectionToClient);
+        go.name = "Player" + LevelManager.playerNum.ToString();
     }
 }
