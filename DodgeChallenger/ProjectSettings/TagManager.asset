@@ -4,8 +4,15 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Bullet
   - Boundary
+  - Fist
+  - Knife
+  - P92
+  - P1911
+  - Shotgun
+  - M416
+  - Kar98k
+  - AWM
   layers:
   - Default
   - TransparentFX

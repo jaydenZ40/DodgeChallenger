@@ -12,11 +12,12 @@ GameObject:
   - component: {fileID: 3416448112663892262}
   - component: {fileID: 6585452764260850226}
   - component: {fileID: 4080791341771669385}
-  - component: {fileID: 4757927555001216991}
   - component: {fileID: 2442479505092787177}
+  - component: {fileID: 414059933558811945}
+  - component: {fileID: 6234323012004621359}
   m_Layer: 0
-  m_Name: Bullet
-  m_TagString: Bullet
+  m_Name: P1911
+  m_TagString: P1911
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -142,7 +143,19 @@ MonoBehaviour:
     i15: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 0
---- !u!114 &4757927555001216991
+--- !u!114 &2442479505092787177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5995957198937199923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0afc4409c37ca064299c0a7d7dbd5c51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &414059933558811945
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -164,17 +177,24 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 1
---- !u!114 &2442479505092787177
-MonoBehaviour:
+--- !u!50 &6234323012004621359
+Rigidbody2D:
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5995957198937199923}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0afc4409c37ca064299c0a7d7dbd5c51, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bulletType: P92
-  bulletSpeed: 3
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 0.0001
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4

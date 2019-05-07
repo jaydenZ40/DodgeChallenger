@@ -9,6 +9,10 @@ public class PlayerConnection : NetworkBehaviour
 
     void Start()
     {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
         Debug.Log("PlayerConnection::Start -- Spawning my own personal unit...");
         CmdSpawnMyUnit();
     }
@@ -26,17 +30,12 @@ public class PlayerConnection : NetworkBehaviour
         //}
     }
 
-    GameObject myPlayerUnit;
-
-    // Command are special functions that ONLY get executed on the server.
     [Command]
     void CmdSpawnMyUnit()
     {
-        int n = ++LevelManager.playerNum;
-        GameObject go = n == 1 ? Instantiate(PlayerUnitPrefab, Vector3.left * 8.5f, Quaternion.identity)
-            : Instantiate(PlayerUnitPrefab, Vector3.right * 8, Quaternion.identity);
-        myPlayerUnit = go;
+        GameObject go = Instantiate(PlayerUnitPrefab);
         NetworkServer.SpawnWithClientAuthority(go, connectionToClient);
-        go.name = "Player" + LevelManager.playerNum.ToString();
+
+        go.name = "Player" + FindObjectOfType<NetworkManager>().numPlayers.ToString();
     }
 }

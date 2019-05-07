@@ -4,47 +4,47 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour
 {
-    public string bulletType = "P92";
-    public float bulletSpeed = 3;
+//    public string bulletType = "P92";
+//    public float bulletSpeed = 3;
 
-    private Vector3 bulletDirection;
-    private int reflectTimeLeft = 4;
+//    private Vector3 bulletDirection;
+//    private int reflectTimeLeft = 4;
 
-    private void Awake()
-    {
-        bulletDirection = GetMouseDirection();
-    }
+//    private void Awake()
+//    {
+//        bulletDirection = GetDirection();
+//    }
 
-    private void Update()
-    {
-        BulletMove();
-    }
+//    private void Update()
+//    {
+//        BulletMove();
+//    }
 
-    void BulletMove()
-    {
-        transform.Translate(bulletDirection * Time.deltaTime * bulletSpeed);
-    }
+//    void BulletMove()
+//    {
+//        transform.Translate(bulletDirection * Time.deltaTime * bulletSpeed);
+//    }
 
-    void OnCollisionEnter2D(Collision2D other)
-    {
-        if (other.transform.CompareTag("Boundary"))
-        {
-            bulletDirection = Vector2.Reflect(bulletDirection, other.contacts[0].normal);
-            reflectTimeLeft--;
-            if (reflectTimeLeft == 0)
-            {
-                Destroy(this.gameObject);
-            }
-        }
+//    void OnCollisionEnter2D(Collision2D other)
+//    {
+//        if (other.transform.CompareTag("Boundary"))
+//        {
+//            bulletDirection = Vector2.Reflect(bulletDirection, other.contacts[0].normal);
+//            reflectTimeLeft--;
+//            if (reflectTimeLeft == 0)
+//            {
+//                Destroy(this.gameObject);
+//            }
+//        }
 
-    }
+//    }
 
-    Vector3 GetMouseDirection()
-    {
-        Vector3 mousePosition = Input.mousePosition;
-        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+//    Vector3 GetDirection()
+//    {
+//        Vector3 mousePosition = Input.mousePosition;
+//        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
 
-        Vector3 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-        return direction.normalized;
-    }
+//        Vector3 direction = new Vector3(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y, 0);
+//        return direction.normalized;
+//    }
 }

@@ -6,25 +6,28 @@ using UnityEngine.Networking;
 
 public class PlayerUnit : NetworkBehaviour
 {
-    public static PlayerUnit instance;
-    public GameObject bullet;
+    public Rigidbody2D rb;
+    public GameObject Fist, Knife, Pan, P92, P1911, Shotgun, M416, Kar98k, AWM;
     public float moveSpeed = 3;
-    public float damage = 1;
     public int bulletLeft = 7;
     public int maxBulletNum = 7;
-    public UnityEvent onShooting = new UnityEvent();
-    public UnityEvent onReloading = new UnityEvent();
 
-    private Rigidbody2D rb;
+    private GameObject currentWeapon;
     private bool isReloading = false;
+    private bool isDodging = false;
+    private bool hasGun = false;
+    private bool isAttackReady = true;
+    private float timer = 0;
+    private float attackPrepareTime = 0.5f;
+    private float damage = 1;
+    [SerializeField]private float bulletSpeed = 3;
 
-    enum Weapon { Fist, Knife, Pan, P92, P1911, Shotgun, M416, Kar98k, AWM };
-    Weapon currentWeapon = Weapon.Fist;
+    //enum Weapon { Fist, Knife, Pan, P92, P1911, Shotgun, M416, Kar98k, AWM };
+    //Weapon currentWeapon = Weapon.Fist;
 
     private void Awake()
     {
-        instance = this;
-        rb = GetComponent<Rigidbody2D>();
+        SetSpawnPosition();
     }
 
     private void FixedUpdate()
@@ -40,9 +43,30 @@ public class PlayerUnit : NetworkBehaviour
         if (!hasAuthority)
             return;
 
-        CmdShoot();
+        timer += Time.deltaTime;
+        Attack();
 
         Reload();
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        GetComponent<SpriteRenderer>().color = Color.red;
+    }
+
+    void SetSpawnPosition()
+    {
+        if (FindObjectOfType<NetworkManager>().numPlayers % 2 == 0)
+        {
+            rb.transform.position = rb.transform.position = Vector3.zero;
+            isDodging = true;
+        }
+        else
+        {
+            rb.transform.position = rb.transform.position = Vector3.left * 8;
+            isDodging = false;
+        }
+        currentWeapon = P1911;
     }
 
     void Move()
@@ -65,23 +89,50 @@ public class PlayerUnit : NetworkBehaviour
         }
     }
 
-    [Command]
-    void CmdShoot()
+    
+    void Attack()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && bulletLeft > 0)
+        if (timer >= GetAttackPrepareTime())
         {
-            GameObject go = Instantiate(bullet, rb.transform.position + GetMouseDirection() * 1.5f, Quaternion.identity);
+            isAttackReady = true;
+            timer = 0;
+        }
+        hasGun = (currentWeapon == Fist || currentWeapon == Knife) ? false : true;
+
+        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)) && bulletLeft > 0 && /*!isDodging &&*/ hasGun && isAttackReady) // comment for testing
+        {
+            CmdAttack1();
             bulletLeft--;
             LevelManager.instance.UpdateBulletNumber(bulletLeft, maxBulletNum);
-            NetworkServer.Spawn(go);
+            isAttackReady = false;
         }
+
+        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)) && !isDodging && !hasGun && isAttackReady)
+        {
+            CmdAttack2();
+            isAttackReady = false;
+        }
+    }
+
+    [Command]
+    void CmdAttack1()
+    {
+        GameObject go = Instantiate(currentWeapon, rb.transform.position + GetMouseDirection() * 1.5f, Quaternion.identity);
+        go.GetComponent<Rigidbody2D>().velocity = GetMouseDirection() * Time.deltaTime * bulletSpeed * 100;
+        Destroy(go, 5f);
+        NetworkServer.Spawn(go);
+    }
+
+    [Command]
+    void CmdAttack2()
+    {
+        GameObject go = Instantiate(currentWeapon, rb.transform.position + GetMouseDirection() / 2, Quaternion.identity);
+        Destroy(go, 0.5f);
+        NetworkServer.Spawn(go);
     }
 
     void Reload()
     {
-        if (!hasAuthority)
-            return;
-
         if (Input.GetKeyDown(KeyCode.R) && !isReloading)
         {
             Invoke("DelayReloadTime", 2);
@@ -103,5 +154,47 @@ public class PlayerUnit : NetworkBehaviour
 
         Vector3 direction = new Vector2(mousePosition.x - rb.transform.position.x, mousePosition.y - rb.transform.position.y);
         return direction.normalized;
+    }
+
+    float GetAttackPrepareTime()
+    {
+        switch (currentWeapon.name)
+        {
+            case "Fist":
+                damage = 1;
+                return 0.5f;
+                break;
+            case "Knife":
+                damage = 2;
+                return 0.5f;
+                break;
+            case "P92":
+                damage = 5;
+                return 0.5f;
+                break;
+            case "P1911":
+                damage = 5;
+                return 0f;
+                break;
+            case "Shotgun":
+                damage = 5;
+                return 1.5f;
+                break;
+            case "M416":
+                damage = 8;
+                return 0f;
+                break;
+            case "Kar98k":
+                damage = 25;
+                return 3f;
+                break;
+            case "AWM":
+                damage = 50;
+                return 3f;
+                break;
+            default:
+                damage = 1;
+                return 0.5f;
+        }
     }
 }

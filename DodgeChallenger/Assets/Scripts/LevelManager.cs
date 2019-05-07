@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Networking;
 
-public class LevelManager : MonoBehaviour
+public class LevelManager : NetworkBehaviour
 {
     public static LevelManager instance;
-    public static int playerNum = 0;
     public TextMeshProUGUI bulletNumberTMP;
 
     private void Awake()
