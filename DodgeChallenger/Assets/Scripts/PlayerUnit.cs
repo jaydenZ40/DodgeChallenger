@@ -99,35 +99,37 @@ public class PlayerUnit : NetworkBehaviour
         }
         hasGun = (currentWeapon == Fist || currentWeapon == Knife) ? false : true;
 
-        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)) && bulletLeft > 0 && /*!isDodging &&*/ hasGun && isAttackReady) // comment for testing
+        // shoot outside the battleground
+        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)) && bulletLeft > 0 && /*!isDodging &&*/ hasGun && isAttackReady) // remove comment after testing
         {
-            CmdAttack1();
+            CmdAttack1(rb.transform.position + GetMouseDirection() * 1.5f);
             bulletLeft--;
             LevelManager.instance.UpdateBulletNumber(bulletLeft, maxBulletNum);
             isAttackReady = false;
         }
 
+        // use fist or knife, inside the battleground
         if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)) && !isDodging && !hasGun && isAttackReady)
         {
-            CmdAttack2();
+            CmdAttack2(rb.transform.position + GetMouseDirection() / 2);
             isAttackReady = false;
         }
     }
 
     [Command]
-    void CmdAttack1()
+    void CmdAttack1(Vector3 pos)
     {
-        GameObject go = Instantiate(currentWeapon, rb.transform.position + GetMouseDirection() * 1.5f, Quaternion.identity);
-        go.GetComponent<Rigidbody2D>().velocity = GetMouseDirection() * Time.deltaTime * bulletSpeed * 100;
-        Destroy(go, 5f);
+        GameObject go = Instantiate(currentWeapon, pos, Quaternion.identity);
+        go.GetComponent<Rigidbody2D>().velocity = (pos - rb.transform.position) * Time.deltaTime * bulletSpeed * 200;
+        Destroy(go, 10f);
         NetworkServer.Spawn(go);
     }
 
     [Command]
-    void CmdAttack2()
+    void CmdAttack2(Vector3 pos)
     {
-        GameObject go = Instantiate(currentWeapon, rb.transform.position + GetMouseDirection() / 2, Quaternion.identity);
-        Destroy(go, 0.5f);
+        GameObject go = Instantiate(currentWeapon, pos, Quaternion.identity);
+        Destroy(go, 0.25f);
         NetworkServer.Spawn(go);
     }
 

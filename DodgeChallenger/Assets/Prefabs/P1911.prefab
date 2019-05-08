@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 3102022190858129364}
   - component: {fileID: 3416448112663892262}
   - component: {fileID: 6585452764260850226}
+  - component: {fileID: 513005075152466835}
   - component: {fileID: 4080791341771669385}
-  - component: {fileID: 2442479505092787177}
   - component: {fileID: 414059933558811945}
   - component: {fileID: 6234323012004621359}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: P1911
   m_TagString: P1911
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: fdde945ea0ba03f4483492a9f9eba93b, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -110,6 +110,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1.0016667}
   m_EdgeRadius: 0
+--- !u!114 &513005075152466835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5995957198937199923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0afc4409c37ca064299c0a7d7dbd5c51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 6234323012004621359}
 --- !u!114 &4080791341771669385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,18 +156,6 @@ MonoBehaviour:
     i15: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 0
---- !u!114 &2442479505092787177
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5995957198937199923}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0afc4409c37ca064299c0a7d7dbd5c51, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &414059933558811945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,7 +190,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.0001
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
