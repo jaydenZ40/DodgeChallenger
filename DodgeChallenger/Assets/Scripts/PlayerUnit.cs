@@ -66,7 +66,7 @@ public class PlayerUnit : NetworkBehaviour
             rb.transform.position = rb.transform.position = Vector3.left * 8;
             isDodging = false;
         }
-        currentWeapon = P1911;
+        currentWeapon = Knife;
     }
 
     void Move()
@@ -111,7 +111,7 @@ public class PlayerUnit : NetworkBehaviour
         // use fist or knife, inside the battleground
         if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)) && !isDodging && !hasGun && isAttackReady)
         {
-            CmdAttack2(rb.transform.position + GetMouseDirection() / 2);
+            CmdAttack2(rb.transform.position + GetMouseDirection() / 1.5f);
             isAttackReady = false;
         }
     }
