@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 public class PlayerUnit : NetworkBehaviour
 {
     public Rigidbody2D rb;
-    public GameObject Fist, Knife, Pan, P92, P1911, Shotgun, M416, Kar98k, AWM;
+    public GameObject Knife, Pan, P92, P1911, Shotgun, M416, Kar98k, AWM;
     public float moveSpeed = 3;
     public int bulletLeft = 7;
     public int maxBulletNum = 7;
@@ -22,12 +22,15 @@ public class PlayerUnit : NetworkBehaviour
     private float damage = 1;
     [SerializeField]private float bulletSpeed = 3;
 
-    //enum Weapon { Fist, Knife, Pan, P92, P1911, Shotgun, M416, Kar98k, AWM };
+    //enum Weapon { Knife, Pan, P92, P1911, Shotgun, M416, Kar98k, AWM };
     //Weapon currentWeapon = Weapon.Fist;
 
     private void Awake()
     {
         SetSpawnPosition();
+
+        Timer.instance.ResetTimer();
+        Timer.instance.onRoundEnd.AddListener(ExchangePosition);
     }
 
     private void FixedUpdate()
@@ -43,15 +46,9 @@ public class PlayerUnit : NetworkBehaviour
         if (!hasAuthority)
             return;
 
-        timer += Time.deltaTime;
         Attack();
 
         Reload();
-    }
-
-    public override void OnStartLocalPlayer()
-    {
-        GetComponent<SpriteRenderer>().color = Color.red;
     }
 
     void SetSpawnPosition()
@@ -66,7 +63,7 @@ public class PlayerUnit : NetworkBehaviour
             rb.transform.position = rb.transform.position = Vector3.left * 8;
             isDodging = false;
         }
-        currentWeapon = Knife;
+        currentWeapon = Pan;
     }
 
     void Move()
@@ -92,12 +89,13 @@ public class PlayerUnit : NetworkBehaviour
     
     void Attack()
     {
+        timer += Time.deltaTime;
         if (timer >= GetAttackPrepareTime())
         {
             isAttackReady = true;
             timer = 0;
         }
-        hasGun = (currentWeapon == Fist || currentWeapon == Knife) ? false : true;
+        hasGun = (currentWeapon == Knife || currentWeapon == Pan) ? false : true;
 
         // shoot outside the battleground
         if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)) && bulletLeft > 0 && /*!isDodging &&*/ hasGun && isAttackReady) // remove comment after testing
@@ -165,38 +163,44 @@ public class PlayerUnit : NetworkBehaviour
             case "Fist":
                 damage = 1;
                 return 0.5f;
-                break;
             case "Knife":
                 damage = 2;
                 return 0.5f;
-                break;
             case "P92":
                 damage = 5;
                 return 0.5f;
-                break;
             case "P1911":
                 damage = 5;
                 return 0f;
-                break;
             case "Shotgun":
                 damage = 5;
                 return 1.5f;
-                break;
             case "M416":
                 damage = 8;
                 return 0f;
-                break;
             case "Kar98k":
                 damage = 25;
                 return 3f;
-                break;
             case "AWM":
                 damage = 50;
                 return 3f;
-                break;
             default:
                 damage = 1;
                 return 0.5f;
+        }
+    }
+
+    void ExchangePosition()
+    {
+        if (!isDodging)
+        {
+            rb.transform.position = rb.transform.position = Vector3.zero;
+            isDodging = true;
+        }
+        else
+        {
+            rb.transform.position = rb.transform.position = Vector3.left * 8;
+            isDodging = false;
         }
     }
 }

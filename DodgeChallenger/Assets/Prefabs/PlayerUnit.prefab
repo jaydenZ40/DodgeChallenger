@@ -132,7 +132,7 @@ MonoBehaviour:
   rb: {fileID: 6680040110089027423}
   Fist: {fileID: 562990699923061887, guid: 7f74c4c79b2e53941935dcd00fa44e3e, type: 3}
   Knife: {fileID: 7858832885883165560, guid: 91a4075da144e08439f4c84878b724b1, type: 3}
-  Pan: {fileID: 0}
+  Pan: {fileID: 562990699923061887, guid: 7f74c4c79b2e53941935dcd00fa44e3e, type: 3}
   P92: {fileID: 0}
   P1911: {fileID: 5995957198937199923, guid: ced795c957655454d8690b87f0b13012, type: 3}
   Shotgun: {fileID: 0}

@@ -5,9 +5,9 @@ using UnityEngine;
 public class BulletController : MonoBehaviour
 {
     public Rigidbody2D rb;
+    public int damage = 1;
 
     private Vector3 bulletVelocity;
-    //    private int reflectTimeLeft = 4;
 
     private void Update()
     {
