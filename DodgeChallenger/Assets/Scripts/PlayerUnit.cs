@@ -31,6 +31,7 @@ public class PlayerUnit : NetworkBehaviour
 
         Timer.instance.ResetTimer();
         Timer.instance.onRoundEnd.AddListener(ExchangePosition);
+        Timer.instance.onShoppingEnd.AddListener(ShootingRangeBorder);
     }
 
     private void FixedUpdate()
@@ -63,7 +64,7 @@ public class PlayerUnit : NetworkBehaviour
             rb.transform.position = rb.transform.position = Vector3.left * 8;
             isDodging = false;
         }
-        currentWeapon = Pan;
+        currentWeapon = Knife;
     }
 
     void Move()
@@ -95,10 +96,9 @@ public class PlayerUnit : NetworkBehaviour
             isAttackReady = true;
             timer = 0;
         }
-        hasGun = (currentWeapon == Knife || currentWeapon == Pan) ? false : true;
 
         // shoot outside the battleground
-        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)) && bulletLeft > 0 && /*!isDodging &&*/ hasGun && isAttackReady) // remove comment after testing
+        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)) && bulletLeft > 0 && !isDodging && hasGun && isAttackReady)
         {
             CmdAttack1(rb.transform.position + GetMouseDirection() * 1.5f);
             bulletLeft--;
@@ -107,7 +107,7 @@ public class PlayerUnit : NetworkBehaviour
         }
 
         // use fist or knife, inside the battleground
-        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)) && !isDodging && !hasGun && isAttackReady)
+        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)) /*&& !isDodging*/ && !hasGun && isAttackReady) // remove comment after testing
         {
             CmdAttack2(rb.transform.position + GetMouseDirection() / 1.5f);
             isAttackReady = false;
@@ -202,5 +202,10 @@ public class PlayerUnit : NetworkBehaviour
             rb.transform.position = rb.transform.position = Vector3.left * 8;
             isDodging = false;
         }
+    }
+
+    void ShootingRangeBorder()
+    {
+        LevelManager.instance.SetShootingRangeBorder(hasGun);
     }
 }

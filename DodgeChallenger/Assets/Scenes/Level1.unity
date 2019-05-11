@@ -2455,7 +2455,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1212160279
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3074,6 +3074,7 @@ MonoBehaviour:
   bulletNumberTMP: {fileID: 1743406153}
   healthTMP: {fileID: 363099140}
   goldTMP: {fileID: 1370580036}
+  ShootingRangeBorder: {fileID: 1212160281}
 --- !u!114 &1543296927
 MonoBehaviour:
   m_ObjectHideFlags: 0

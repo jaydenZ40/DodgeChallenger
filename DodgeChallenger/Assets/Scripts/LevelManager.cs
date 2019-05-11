@@ -9,6 +9,7 @@ public class LevelManager : NetworkBehaviour
     public static LevelManager instance;
     public TextMeshProUGUI bulletNumberTMP;
     public TextMeshProUGUI healthTMP, goldTMP;
+    public Collider2D ShootingRangeBorder;
 
     private int health = 100;
     private int gold = 0;
@@ -45,5 +46,19 @@ public class LevelManager : NetworkBehaviour
     public void UpdateBulletNumber(int bulletLeft, int maxBullet)
     {
         bulletNumberTMP.text = (bulletLeft + " / " + maxBullet);
+    }
+
+    public bool SetShootingRangeBorder(bool hasGun)
+    {
+        if (hasGun)
+        {
+            ShootingRangeBorder.gameObject.SetActive(false);
+            return false;
+        }
+        else
+        {
+            ShootingRangeBorder.gameObject.SetActive(true);
+            return true;
+        }
     }
 }
