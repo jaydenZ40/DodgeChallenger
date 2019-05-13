@@ -13,21 +13,9 @@ public class PlayerConnection : NetworkBehaviour
         {
             return;
         }
+
         Debug.Log("PlayerConnection::Start -- Spawning my own personal unit...");
         CmdSpawnMyUnit();
-    }
-
-    void Update()
-    {
-        //if (!isLocalPlayer)
-        //{
-        //    return;
-        //}
-
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    CmdSpawnMyUnit();
-        //}
     }
 
     [Command]
@@ -36,6 +24,12 @@ public class PlayerConnection : NetworkBehaviour
         GameObject go = Instantiate(PlayerUnitPrefab);
         NetworkServer.SpawnWithClientAuthority(go, connectionToClient);
 
-        go.name = "Player" + FindObjectOfType<NetworkManager>().numPlayers.ToString();
+        int playerNum = FindObjectOfType<NetworkManager>().numPlayers;
+        go.name = "Player" + playerNum.ToString();
+        //if (playerNum % 2 == 0)
+        //{
+        //    go.layer = LayerMask.NameToLayer("RemotePlayer");
+        //    go.GetComponent<SpriteRenderer>().color = Color.red;
+        //}
     }
 }

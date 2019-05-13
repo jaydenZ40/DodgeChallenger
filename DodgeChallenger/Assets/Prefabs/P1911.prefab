@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 6234323012004621359}
   m_Layer: 8
   m_Name: P1911
-  m_TagString: P1911
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -123,6 +123,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 6234323012004621359}
+  damage: 1
 --- !u!114 &4080791341771669385
 MonoBehaviour:
   m_ObjectHideFlags: 0

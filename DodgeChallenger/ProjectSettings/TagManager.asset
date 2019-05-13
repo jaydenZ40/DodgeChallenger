@@ -13,6 +13,7 @@ TagManager:
   - M416
   - Kar98k
   - AWM
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -23,8 +24,8 @@ TagManager:
   - 
   - 
   - Bullet
-  - 
-  - 
+  - LocalPlayer
+  - RemotePlayer
   - 
   - 
   - 

@@ -5,7 +5,6 @@ using UnityEngine;
 public class BulletController : MonoBehaviour
 {
     public Rigidbody2D rb;
-    public int damage = 1;
 
     private Vector3 bulletVelocity;
 
@@ -22,5 +21,13 @@ public class BulletController : MonoBehaviour
             rb.velocity = Vector2.Reflect(bulletVelocity, other.contacts[0].normal);
         }
 
+        if (other.transform.CompareTag("Player"))
+        {
+            if (other.gameObject.GetComponent<PlayerUnit>().isDodging)
+            {
+                other.gameObject.GetComponent<PlayerUnit>().GetShot();
+                Destroy(this.gameObject);
+            } 
+        }
     }
 }

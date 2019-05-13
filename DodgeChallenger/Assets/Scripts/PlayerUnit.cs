@@ -11,16 +11,17 @@ public class PlayerUnit : NetworkBehaviour
     public float moveSpeed = 3;
     public int bulletLeft = 7;
     public int maxBulletNum = 7;
+    public bool isDodging = false;
 
     private GameObject currentWeapon;
     private bool isReloading = false;
-    private bool isDodging = false;
-    private bool hasGun = false;
+    private bool hasGun = true;
     private bool isAttackReady = true;
     private float timer = 0;
     private float attackPrepareTime = 0.5f;
-    private float damage = 1;
+    private int damage = 1;
     [SerializeField]private float bulletSpeed = 3;
+    private int health = 100;
 
     //enum Weapon { Knife, Pan, P92, P1911, Shotgun, M416, Kar98k, AWM };
     //Weapon currentWeapon = Weapon.Fist;
@@ -64,27 +65,29 @@ public class PlayerUnit : NetworkBehaviour
             rb.transform.position = rb.transform.position = Vector3.left * 8;
             isDodging = false;
         }
-        currentWeapon = Knife;
+
+        currentWeapon = P1911;
     }
 
     void Move()
     {
         if (Input.GetKey(KeyCode.W))
         {
-            transform.Translate(Vector3.up * Time.deltaTime * moveSpeed);
+            rb.transform.Translate(Vector3.up * Time.deltaTime * moveSpeed);
         }
         if (Input.GetKey(KeyCode.S))
         {
-            transform.Translate(Vector3.down * Time.deltaTime * moveSpeed);
+            rb.transform.Translate(Vector3.down * Time.deltaTime * moveSpeed);
         }
         if (Input.GetKey(KeyCode.A))
         {
-            transform.Translate(Vector3.left * Time.deltaTime * moveSpeed);
+            rb.transform.Translate(Vector3.left * Time.deltaTime * moveSpeed);
         }
         if (Input.GetKey(KeyCode.D))
         {
-            transform.Translate(Vector3.right * Time.deltaTime * moveSpeed);
+            rb.transform.Translate(Vector3.right * Time.deltaTime * moveSpeed);
         }
+        rb.velocity = Vector3.zero; // ignore the effect of collision with weapons
     }
 
     
@@ -156,6 +159,58 @@ public class PlayerUnit : NetworkBehaviour
         return direction.normalized;
     }
 
+    void ExchangePosition()
+    {
+        if (!isDodging)
+        {
+            rb.transform.position = rb.transform.position = Vector3.zero;
+            isDodging = true;
+        }
+        else
+        {
+            rb.transform.position = rb.transform.position = Vector3.left * 8;
+            isDodging = false;
+        }
+    }
+
+    void ShootingRangeBorder()
+    {
+        LevelManager.instance.SetShootingRangeBorder(hasGun);
+    }
+
+    public void GetShot()
+    {
+        if (isDodging)
+        {
+            health -= damage;
+            LevelManager.instance.ShowTextChange(health);
+            if (health <= 0)
+            {
+                string gameoverText = rb.name + " lose!";
+                Debug.Log(gameoverText);
+            }
+        }       
+    }
+    //void OnCollisionEnter2D(Collision2D other)
+    //{
+    //    if (!isDodging)
+    //    {
+    //        return;
+    //    }
+
+    //    if (other.gameObject.CompareTag("Bullet"))
+    //    {
+    //        Destroy(other.gameObject);
+    //        health -= damage;
+    //        LevelManager.instance.ShowTextChange(health);
+    //        if (health <= 0)
+    //        {
+    //            string gameoverText = rb.name + " lose!";
+    //            Debug.Log(gameoverText);
+    //        }
+    //    }
+    //}
+
     float GetAttackPrepareTime()
     {
         switch (currentWeapon.name)
@@ -188,24 +243,5 @@ public class PlayerUnit : NetworkBehaviour
                 damage = 1;
                 return 0.5f;
         }
-    }
-
-    void ExchangePosition()
-    {
-        if (!isDodging)
-        {
-            rb.transform.position = rb.transform.position = Vector3.zero;
-            isDodging = true;
-        }
-        else
-        {
-            rb.transform.position = rb.transform.position = Vector3.left * 8;
-            isDodging = false;
-        }
-    }
-
-    void ShootingRangeBorder()
-    {
-        LevelManager.instance.SetShootingRangeBorder(hasGun);
     }
 }

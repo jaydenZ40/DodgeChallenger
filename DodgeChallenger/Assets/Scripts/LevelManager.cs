@@ -13,6 +13,7 @@ public class LevelManager : NetworkBehaviour
 
     private int health = 100;
     private int gold = 0;
+    private int damage = 1;
 
     private void Awake()
     {
@@ -28,17 +29,18 @@ public class LevelManager : NetworkBehaviour
     void GoldConvert()
     {
         int temp = health; health = 100; gold = temp;
-        ShowTextChange();
+        ShowTextChange(health);
     }
 
     void HealthConvert()
     {
         int temp = gold; gold = 0; health += gold;
-        ShowTextChange();
+        ShowTextChange(health);
     }
 
-    void ShowTextChange()
+    public void ShowTextChange(int h)
     {
+        health = h;
         healthTMP.text = "Health: " + health;
         goldTMP.text = "Gold: " + gold;
     }
