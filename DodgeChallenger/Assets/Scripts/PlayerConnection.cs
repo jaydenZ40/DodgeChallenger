@@ -26,10 +26,16 @@ public class PlayerConnection : NetworkBehaviour
 
         int playerNum = FindObjectOfType<NetworkManager>().numPlayers;
         go.name = "Player" + playerNum.ToString();
+        //Debug.Log("Number of players: " + playerNum);
         //if (playerNum % 2 == 0)
         //{
         //    go.layer = LayerMask.NameToLayer("RemotePlayer");
         //    go.GetComponent<SpriteRenderer>().color = Color.red;
+        //}
+        //else
+        //{
+        //    go.layer = LayerMask.NameToLayer("LocalPlayer");
+        //    go.GetComponent<SpriteRenderer>().color = Color.white;
         //}
     }
 }

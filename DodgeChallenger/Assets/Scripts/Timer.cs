@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
-using UnityEngine.Networking;
 
-public class Timer : NetworkBehaviour
+public class Timer : MonoBehaviour
 {
     public static Timer instance;
     public TextMeshProUGUI roundAndTimeTMP;
@@ -56,5 +55,8 @@ public class Timer : NetworkBehaviour
     {
         timer = 0;
         isShoppingTime = false;
+        roundNum = 1;
+        roundAndTimeTMP.color = Color.red;
+        roundAndTimeTMP.text = "Round " + roundNum + "30 s";
     }
 }

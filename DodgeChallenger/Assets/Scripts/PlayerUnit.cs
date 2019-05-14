@@ -15,16 +15,12 @@ public class PlayerUnit : NetworkBehaviour
 
     private GameObject currentWeapon;
     private bool isReloading = false;
-    private bool hasGun = true;
+    private bool hasGun = false;
     private bool isAttackReady = true;
     private float timer = 0;
     private float attackPrepareTime = 0.5f;
-    private int damage = 1;
-    [SerializeField]private float bulletSpeed = 3;
+    [SerializeField] private float bulletSpeed = 3;
     private int health = 100;
-
-    //enum Weapon { Knife, Pan, P92, P1911, Shotgun, M416, Kar98k, AWM };
-    //Weapon currentWeapon = Weapon.Fist;
 
     private void Awake()
     {
@@ -66,7 +62,7 @@ public class PlayerUnit : NetworkBehaviour
             isDodging = false;
         }
 
-        currentWeapon = P1911;
+        currentWeapon = Knife;
     }
 
     void Move()
@@ -90,7 +86,7 @@ public class PlayerUnit : NetworkBehaviour
         rb.velocity = Vector3.zero; // ignore the effect of collision with weapons
     }
 
-    
+
     void Attack()
     {
         timer += Time.deltaTime;
@@ -110,7 +106,7 @@ public class PlayerUnit : NetworkBehaviour
         }
 
         // use fist or knife, inside the battleground
-        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)) /*&& !isDodging*/ && !hasGun && isAttackReady) // remove comment after testing
+        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)) && !isDodging && !hasGun && isAttackReady)
         {
             CmdAttack2(rb.transform.position + GetMouseDirection() / 1.5f);
             isAttackReady = false;
@@ -175,22 +171,24 @@ public class PlayerUnit : NetworkBehaviour
 
     void ShootingRangeBorder()
     {
+        hasGun = (currentWeapon == Knife || currentWeapon == Pan) ? false : true;
         LevelManager.instance.SetShootingRangeBorder(hasGun);
     }
 
-    public void GetShot()
-    {
-        if (isDodging)
-        {
-            health -= damage;
-            LevelManager.instance.ShowTextChange(health);
-            if (health <= 0)
-            {
-                string gameoverText = rb.name + " lose!";
-                Debug.Log(gameoverText);
-            }
-        }       
-    }
+    //public void GetShot(int d)
+    //{
+
+    //    if (isDodging)
+    //    {
+    //        health -= d;
+    //        if (health <= 0)
+    //        {
+    //            string gameoverText = rb.name + " lose!";
+    //            Debug.Log(gameoverText);
+    //        }
+    //    }
+    //}
+
     //void OnCollisionEnter2D(Collision2D other)
     //{
     //    if (!isDodging)
@@ -201,13 +199,19 @@ public class PlayerUnit : NetworkBehaviour
     //    if (other.gameObject.CompareTag("Bullet"))
     //    {
     //        Destroy(other.gameObject);
-    //        health -= damage;
-    //        LevelManager.instance.ShowTextChange(health);
-    //        if (health <= 0)
-    //        {
-    //            string gameoverText = rb.name + " lose!";
-    //            Debug.Log(gameoverText);
-    //        }
+    //        RpcGetShot();
+    //    }
+    //}
+
+    //[ClientRpc]
+    //void RpcGetShot()
+    //{
+    //    health -= damage;
+    //    LevelManager.instance.ShowTextChange(health);
+    //    if (health <= 0)
+    //    {
+    //        string gameoverText = rb.name + " lose!";
+    //        Debug.Log(gameoverText);
     //    }
     //}
 
@@ -216,31 +220,22 @@ public class PlayerUnit : NetworkBehaviour
         switch (currentWeapon.name)
         {
             case "Fist":
-                damage = 1;
                 return 0.5f;
             case "Knife":
-                damage = 2;
                 return 0.5f;
             case "P92":
-                damage = 5;
                 return 0.5f;
             case "P1911":
-                damage = 5;
                 return 0f;
             case "Shotgun":
-                damage = 5;
                 return 1.5f;
             case "M416":
-                damage = 8;
                 return 0f;
             case "Kar98k":
-                damage = 25;
                 return 3f;
             case "AWM":
-                damage = 50;
                 return 3f;
             default:
-                damage = 1;
                 return 0.5f;
         }
     }

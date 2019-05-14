@@ -14,6 +14,7 @@ TagManager:
   - Kar98k
   - AWM
   - Bullet
+  - Pan
   layers:
   - Default
   - TransparentFX
