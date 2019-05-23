@@ -10,6 +10,7 @@ public class LevelManager : MonoBehaviour
     public TextMeshProUGUI healthTMP1, goldTMP1, healthTMP2, goldTMP2;
     public Collider2D ShootingRangeBorder;
     public bool isP1Dodging = false;
+    public int damage = 1;
 
     private int health1 = 100;
     private int health2 = 100;
@@ -47,19 +48,24 @@ public class LevelManager : MonoBehaviour
 
     void HealthConvert()
     {
-        int temp = gold1; gold1 = 0; health1 += gold1;
+        int temp = gold1; gold1 = 0; health1 += temp / 10;
 
-        temp = gold2; gold2 = 0; health2 += gold2;
+        temp = gold2; gold2 = 0; health2 += temp / 10;
     }
 
-    public void GetShot1(int damage)
+    public void SetHealth(int h1, int h2)
     {
-        health1 -= damage;
+        health1 = h1; health2 = h2;
     }
 
-    public void GetShot2(int damage)
+    public int GetHealth1()
     {
-        health2 -= damage;
+        return health1;
+    }
+
+    public int GetHealth2()
+    {
+        return health2;
     }
 
     public void UpdateBulletNumber(int bulletLeft, int maxBullet)

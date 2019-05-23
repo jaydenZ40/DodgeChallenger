@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Networking;
 
 public class PlayerUnit : NetworkBehaviour
@@ -15,12 +14,12 @@ public class PlayerUnit : NetworkBehaviour
 
     private GameObject currentWeapon;
     private bool isReloading = false;
-    private bool hasGun = false;
+    private bool hasGun = true; // change to false after testing
     private bool isAttackReady = true;
     private float timer = 0;
     private float attackPrepareTime = 0.5f;
     [SerializeField] private float bulletSpeed = 3;
-    private int health = 100;
+    private int h1 = 100, h2 = 100;
 
     private void Awake()
     {
@@ -47,6 +46,11 @@ public class PlayerUnit : NetworkBehaviour
         Attack();
 
         Reload();
+
+        LevelManager.instance.SetHealth(60, 50);
+        //SetHealth();
+
+        //GetHealth();
     }
 
     void SetSpawnPosition()
@@ -62,7 +66,7 @@ public class PlayerUnit : NetworkBehaviour
             isDodging = false;
         }
 
-        currentWeapon = Knife;
+        currentWeapon = P1911; // change to knife after testing
     }
 
     void Move()
@@ -85,7 +89,6 @@ public class PlayerUnit : NetworkBehaviour
         }
         rb.velocity = Vector3.zero; // ignore the effect of collision with weapons
     }
-
 
     void Attack()
     {
@@ -155,6 +158,17 @@ public class PlayerUnit : NetworkBehaviour
         return direction.normalized;
     }
 
+    void SetHealth()
+    {
+        LevelManager.instance.SetHealth(h1, h2);
+    }
+
+    void GetHealth()
+    {
+        h1 = LevelManager.instance.GetHealth1();
+        h2 = LevelManager.instance.GetHealth2();
+    }
+
     void ExchangePosition()
     {
         if (!isDodging)
@@ -175,45 +189,27 @@ public class PlayerUnit : NetworkBehaviour
         LevelManager.instance.SetShootingRangeBorder(hasGun);
     }
 
-    //public void GetShot(int d)
-    //{
-
-    //    if (isDodging)
-    //    {
-    //        health -= d;
-    //        if (health <= 0)
-    //        {
-    //            string gameoverText = rb.name + " lose!";
-    //            Debug.Log(gameoverText);
-    //        }
-    //    }
-    //}
-
-    //void OnCollisionEnter2D(Collision2D other)
-    //{
-    //    if (!isDodging)
-    //    {
-    //        return;
-    //    }
-
-    //    if (other.gameObject.CompareTag("Bullet"))
-    //    {
-    //        Destroy(other.gameObject);
-    //        RpcGetShot();
-    //    }
-    //}
-
-    //[ClientRpc]
-    //void RpcGetShot()
-    //{
-    //    health -= damage;
-    //    LevelManager.instance.ShowTextChange(health);
-    //    if (health <= 0)
-    //    {
-    //        string gameoverText = rb.name + " lose!";
-    //        Debug.Log(gameoverText);
-    //    }
-    //}
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.transform.CompareTag("Bullet"))
+        {
+            if (LevelManager.instance.isP1Dodging)
+            {
+                Debug.Log("Player 1 was shot.");
+                h1 -= LevelManager.instance.damage;
+            }
+            if (!LevelManager.instance.isP1Dodging)
+            {
+                Debug.Log("Player 2 was shot.");
+                h2 -= LevelManager.instance.damage;
+            }
+            LevelManager.instance.SetHealth(h1, h2);
+            if (!other.gameObject.CompareTag("Knife") && !other.gameObject.CompareTag("Pan"))
+            {
+                Destroy(other.gameObject);
+            }
+        }
+    }
 
     float GetAttackPrepareTime()
     {
