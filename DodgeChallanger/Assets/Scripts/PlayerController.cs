@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class PlayerController : NetworkBehaviour
 {
-    public GameObject Knife, Pan, P92, P1911, Shotgun, M416, Kar98k, AWM;
+    public GameObject Knife, Pan, P92, P1911, S686, M416, Kar98k, AWM;
     public GameObject currentWeapon;
     public float moveSpeed = 3;
     public int bulletLeft = 7;
@@ -220,7 +220,7 @@ public class PlayerController : NetworkBehaviour
                 return 0.5f;
             case "P1911":
                 return 0f;
-            case "Shotgun":
+            case "S686":
                 return 1.5f;
             case "M416":
                 return 0f;
@@ -276,15 +276,18 @@ public class PlayerController : NetworkBehaviour
     public void CmdSetCurrentWeapon(string ID, string weapon)
     {
         GameObject go = GameObject.Find(ID);
+        go.GetComponent<PlayerController>().hasGun = true;
         switch (weapon)
         {
             case "Knife":
                 currentWeapon = Knife;
                 go.GetComponent<Player_Health>().damage = 1;
+                go.GetComponent<PlayerController>().hasGun = false;
                 break;
             case "Pan":
                 currentWeapon = Pan;
                 go.GetComponent<Player_Health>().damage = 2;
+                go.GetComponent<PlayerController>().hasGun = false;
                 break;
             case "P92":
                 currentWeapon = P92;
@@ -294,8 +297,8 @@ public class PlayerController : NetworkBehaviour
                 currentWeapon = P1911;
                 go.GetComponent<Player_Health>().damage = 5;
                 break;
-            case "Shotgun":
-                currentWeapon = Shotgun;
+            case "S686":
+                currentWeapon = S686;
                 go.GetComponent<Player_Health>().damage = 10;
                 break;
             case "M416":

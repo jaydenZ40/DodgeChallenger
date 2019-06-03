@@ -29,7 +29,6 @@ public class BulletController : MonoBehaviour
         {
             string _playerID = other.gameObject.name;
             if (GameObject.Find(_playerID).GetComponent<PlayerController>().isDodging)
-            //if (_playerID == LocalManager.instance.dodgingID)
             {
                 GameObject.Find(_playerID).GetComponent<PlayerController>().TakeDamage(_playerID);
             }
