@@ -12,6 +12,7 @@ public class PlayerController : NetworkBehaviour
     public int maxBulletNum = 7;
     public float bulletSpeed = 3;
     [SyncVar] public bool isDodging = false;
+    public int damage = 1;
 
     private Rigidbody2D rb;
     private bool isReloading = false;
@@ -20,7 +21,6 @@ public class PlayerController : NetworkBehaviour
     private bool isAttackReady = true;
     private float timer = 0;
     private bool runOnce = true;
-    private int damge = 1;
 
     void Start()
     {
@@ -33,6 +33,7 @@ public class PlayerController : NetworkBehaviour
 
         rb = GetComponent<Rigidbody2D>();
         rb.GetComponent<SpriteRenderer>().color = Color.red;
+        ButtonController.instance.localPlayer = rb.gameObject;
         Timer.instance.onRoundEnd.AddListener(ShoppingPause);
         Timer.instance.onShoppingEnd.AddListener(ExchangePosition);
     }
@@ -234,14 +235,85 @@ public class PlayerController : NetworkBehaviour
 
     public void TakeDamage(string ID)
     {
-        CmdTellServerWhoWasShot(ID, 1);
+        CmdTellServerWhoWasShot(ID);
     }
 
     [Command]
-    void CmdTellServerWhoWasShot(string ID, int damage)
+    void CmdTellServerWhoWasShot(string ID)
     {
         Debug.Log(ID + " has been shot.");
         GameObject go = GameObject.Find(ID);
-        go.GetComponent<Player_Health>().TakeDamage(damage);
+        GameObject shooter = FindShooter(ID);
+        go.GetComponent<Player_Health>().TakeDamage(shooter.GetComponent<Player_Health>().damage);
+        shooter.GetComponent<Player_Health>().GetGold(shooter.GetComponent<Player_Health>().damage);
+    }
+
+    GameObject FindShooter(string ID)
+    {
+        GameObject go1 = GameObject.FindGameObjectsWithTag("Player")[0];
+        GameObject go2 = GameObject.FindGameObjectsWithTag("Player")[1];
+        return go1.name == ID ? go2 : go1;
+    }
+
+    public void PurchaseItem(string ID, int g)
+    {
+        CmdPurchaseItem(ID, g);
+    }
+
+    [Command]
+    void CmdPurchaseItem(string ID, int g)
+    {
+        GameObject go = GameObject.Find(ID);
+        go.GetComponent<Player_Health>().TakeGold(g);
+    }
+
+    public void SetCurrentWeapon(string ID, string weapon)
+    {
+        CmdSetCurrentWeapon(ID, weapon);
+    }
+
+    [Command]
+    public void CmdSetCurrentWeapon(string ID, string weapon)
+    {
+        GameObject go = GameObject.Find(ID);
+        switch (weapon)
+        {
+            case "Knife":
+                currentWeapon = Knife;
+                go.GetComponent<Player_Health>().damage = 1;
+                break;
+            case "Pan":
+                currentWeapon = Pan;
+                go.GetComponent<Player_Health>().damage = 2;
+                break;
+            case "P92":
+                currentWeapon = P92;
+                go.GetComponent<Player_Health>().damage = 5;
+                break;
+            case "P1911":
+                currentWeapon = P1911;
+                go.GetComponent<Player_Health>().damage = 5;
+                break;
+            case "Shotgun":
+                currentWeapon = Shotgun;
+                go.GetComponent<Player_Health>().damage = 10;
+                break;
+            case "M416":
+                currentWeapon = M416;
+                go.GetComponent<Player_Health>().damage = 10;
+                break;
+            case "Kar98k":
+                currentWeapon = Kar98k;
+                go.GetComponent<Player_Health>().damage = 25;
+                break;
+            case "AWM":
+                currentWeapon = AWM;
+                go.GetComponent<Player_Health>().damage = 50;
+                break;
+            default:
+                currentWeapon = Knife;
+                go.GetComponent<Player_Health>().damage = 1;
+                break;
+        }
     }
 }

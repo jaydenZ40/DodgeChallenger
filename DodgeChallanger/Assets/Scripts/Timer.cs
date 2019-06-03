@@ -40,8 +40,8 @@ public class Timer : MonoBehaviour
 
         if (isShoppingTime)
         {
-            roundAndTimeTMP.text = "Shopping" + "\n    " + (15 - (int)timer) + " s";
-            if (timer >= 15)
+            roundAndTimeTMP.text = "Shopping" + "\n    " + (10 - (int)timer) + " s";
+            if (timer >= 10)
             {
                 timer = 0;
                 onShoppingEnd.Invoke();

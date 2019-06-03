@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Knife: {fileID: 6176924220508084337, guid: f1063ac1e5e249b4e87aee7f60814b4b, type: 3}
-  Pan: {fileID: 0}
-  P92: {fileID: 0}
+  Pan: {fileID: 6176924220508084337, guid: f86a66655a95c974d9cadac67ea3a14f, type: 3}
+  P92: {fileID: 9160778004656585601, guid: ab8dff36ec0dd734d9e80a6ee847846c, type: 3}
   P1911: {fileID: 9160778004656585601, guid: 323049f56e251214294849cdcd59465a, type: 3}
   Shotgun: {fileID: 0}
   M416: {fileID: 0}
@@ -166,6 +166,8 @@ MonoBehaviour:
   bulletLeft: 7
   maxBulletNum: 7
   bulletSpeed: 3
+  isDodging: 0
+  damage: 1
 --- !u!114 &3609066587887849014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,7 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd3a2dfa8e9b3c341aaad5d480dcd44f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerUniqueName: 
+  playerUniqueID: 
 --- !u!61 &4242638281480930428
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -217,6 +219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea4a4070066020e4f8fb3720e950f150, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 1
 --- !u!114 &6928474578576290002
 MonoBehaviour:
   m_ObjectHideFlags: 0
