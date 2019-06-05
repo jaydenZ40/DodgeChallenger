@@ -27,7 +27,10 @@ public class ButtonController : MonoBehaviour
 
     public void OnShop()
     {
-        shopPanel.SetActive(true);
+        if (Timer.instance.isShoppingTime)
+        {
+            shopPanel.SetActive(true);
+        }
     }
 
     public void OnCloseShop()

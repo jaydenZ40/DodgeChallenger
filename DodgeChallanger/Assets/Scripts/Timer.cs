@@ -10,9 +10,9 @@ public class Timer : MonoBehaviour
     public TextMeshProUGUI roundAndTimeTMP;
     public UnityEvent onRoundEnd = new UnityEvent();
     public UnityEvent onShoppingEnd = new UnityEvent();
+    public bool isShoppingTime = false;
 
     private float timer = 0;
-    private bool isShoppingTime = false;
     private int roundNum = 1;
 
     private void Awake()

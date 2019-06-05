@@ -11,7 +11,6 @@ public class LocalManager : MonoBehaviour
     public TextMeshProUGUI bulletNumberTMP;
     public int gold;
     public string weapon;
-    public string dodgingID;
 
     private void Awake()
     {

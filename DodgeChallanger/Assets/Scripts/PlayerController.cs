@@ -17,7 +17,6 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody2D rb;
     private bool isReloading = false;
     private bool isShopping = false;
-    private bool hasGun = false; // change to false after testing
     private bool isAttackReady = true;
     private float timer = 0;
     private bool runOnce = true;
@@ -71,16 +70,21 @@ public class PlayerController : NetworkBehaviour
         if (FindObjectOfType<NetworkManager>().numPlayers % 2 == 0)
         {
             rb.transform.position = rb.transform.position = Vector3.zero;
-            isDodging = true;
-            LocalManager.instance.dodgingID = this.transform.name;
+            CmdSetDodging(rb.name, true);
         }
         else
         {
             rb.transform.position = rb.transform.position = Vector3.left * 6f;
-            isDodging = false;
+            CmdSetDodging(rb.name ,false);
         }
 
         currentWeapon = Knife; // change to knife after testing
+    }
+
+    [Command]
+    void CmdSetDodging(string ID, bool b)
+    {
+        GameObject.Find(ID).GetComponent<PlayerController>().isDodging = b;
     }
 
     void Move()
@@ -117,38 +121,46 @@ public class PlayerController : NetworkBehaviour
         }
 
         // shoot outside the battleground
-        if (Input.GetKeyDown(KeyCode.Mouse0) && bulletLeft > 0 && !isShopping && !isDodging && hasGun && isAttackReady)
+        if (Input.GetKeyDown(KeyCode.Mouse0) && bulletLeft > 0 && !isShopping && !isDodging && isAttackReady)
         {
-            CmdAttack1(rb.transform.position + GetMouseDirection() * 1.5f);
+            CmdAttack(rb.transform.position + GetMouseDirection() * 1.5f, rb.position);
             bulletLeft--;
             LocalManager.instance.UpdateBulletNumber(bulletLeft, maxBulletNum);
             isAttackReady = false;
         }
 
-        // use fist or knife, inside the battleground
-        if (Input.GetKeyDown(KeyCode.Mouse0) && !isShopping && !isDodging && !hasGun && isAttackReady)
+        //// use fist or knife, inside the battleground
+        //if (Input.GetKeyDown(KeyCode.Mouse0) && !isShopping && !isDodging && !hasGun && isAttackReady)
+        //{
+        //    CmdAttack2(rb.transform.position + GetMouseDirection() * 1.25f);
+        //    isAttackReady = false;
+        //}
+    }
+
+    [Command]
+    void CmdAttack(Vector3 spawnPos, Vector3 playerPos)    //  shoot bullets
+    {
+        GameObject go = Instantiate(currentWeapon, spawnPos, Quaternion.identity);
+        if (go.CompareTag("MeleeWeapon"))
         {
-            CmdAttack2(rb.transform.position + GetMouseDirection() * 1.25f);
-            isAttackReady = false;
+            go.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+            Destroy(go, 0.5f);
         }
-    }
-
-    [Command]
-    void CmdAttack1(Vector3 pos)    //  shoot bullets
-    {
-        GameObject go = Instantiate(currentWeapon, pos, Quaternion.identity);
-        go.GetComponent<Rigidbody2D>().velocity = (pos - rb.transform.position) * Time.deltaTime * bulletSpeed * 200;
-        Destroy(go, 10f);
+        else
+        {
+            go.GetComponent<Rigidbody2D>().velocity = (spawnPos - playerPos) * Time.deltaTime * bulletSpeed * 200;
+            Destroy(go, 10f);
+        }
         NetworkServer.Spawn(go);
     }
 
-    [Command]
-    void CmdAttack2(Vector3 pos)    // knife or pan
-    {
-        GameObject go = Instantiate(currentWeapon, pos, Quaternion.identity);
-        Destroy(go, 0.5f);
-        NetworkServer.Spawn(go);
-    }
+    //[Command]
+    //void CmdAttack2(Vector3 pos)    // knife or pan
+    //{
+    //    GameObject go = Instantiate(currentWeapon, pos, Quaternion.identity);
+    //    Destroy(go, 0.5f);
+    //    NetworkServer.Spawn(go);
+    //}
 
     void Reload()
     {
@@ -187,24 +199,15 @@ public class PlayerController : NetworkBehaviour
             rb.gameObject.SetActive(false);
             rb.transform.position = rb.transform.position = Vector3.zero;
             isDodging = true;
-            LocalManager.instance.dodgingID = this.transform.name;
             rb.gameObject.SetActive(true);
         }
-        else if (hasGun)
+        else
         {
             rb.gameObject.SetActive(false);
             rb.transform.position = rb.transform.position = Vector3.left * 8.3f;
             isDodging = false;
             rb.gameObject.SetActive(true);
         }
-        else
-        {
-            rb.gameObject.SetActive(false);
-            rb.transform.position = rb.transform.position = Vector3.left * 6f;
-            isDodging = false;
-            rb.gameObject.SetActive(true);
-        }
-        hasGun = (currentWeapon == Knife || currentWeapon == Pan) ? false : true;
         isShopping = false;
     }
 
@@ -276,18 +279,15 @@ public class PlayerController : NetworkBehaviour
     public void CmdSetCurrentWeapon(string ID, string weapon)
     {
         GameObject go = GameObject.Find(ID);
-        go.GetComponent<PlayerController>().hasGun = true;
         switch (weapon)
         {
             case "Knife":
                 currentWeapon = Knife;
                 go.GetComponent<Player_Health>().damage = 1;
-                go.GetComponent<PlayerController>().hasGun = false;
                 break;
             case "Pan":
                 currentWeapon = Pan;
                 go.GetComponent<Player_Health>().damage = 2;
-                go.GetComponent<PlayerController>().hasGun = false;
                 break;
             case "P92":
                 currentWeapon = P92;

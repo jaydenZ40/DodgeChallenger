@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class BulletController : MonoBehaviour
+public class BulletController : NetworkBehaviour
 {
     private Rigidbody2D rb;
     private Vector3 bulletVelocity;
@@ -10,6 +11,15 @@ public class BulletController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        rb.velocity = bulletVelocity * Time.deltaTime * 1;
+        //if (GetBulletSpeed() == 0)
+        //{
+        //    Invoke("CmdDestoryBullet", 0.5f);
+        //}
+        //else
+        //{
+        //    Invoke("CmdDestoryBullet", 10);
+        //}
     }
 
     private void Update()
@@ -30,7 +40,7 @@ public class BulletController : MonoBehaviour
             string _playerID = other.gameObject.name;
             if (GameObject.Find(_playerID).GetComponent<PlayerController>().isDodging)
             {
-                GameObject.Find(_playerID).GetComponent<PlayerController>().TakeDamage(_playerID);
+                CmdShotAt(_playerID);
             }
             if (gameObject.CompareTag("MeleeWeapon"))
             {
@@ -39,4 +49,26 @@ public class BulletController : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
+    [Command]
+    void CmdShotAt(string _playerID)
+    {
+        GameObject.Find(_playerID).GetComponent<PlayerController>().TakeDamage(_playerID);
+
+    }
+
+    //float GetBulletSpeed()
+    //{
+    //    if (this.CompareTag("MeleeWeapon"))
+    //    {
+    //        return 0;
+    //    }
+    //    return 3;   //  need to change for each weapon later
+    //}
+
+    //[Command]
+    //void CmdDestoryBullet()
+    //{
+    //    NetworkServer.Destroy(this.gameObject);
+    //}
 }
