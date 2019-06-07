@@ -211,13 +211,6 @@ public class PlayerController : NetworkBehaviour
         {
             hasFought = true;
         }
-
-        //if (FindObjectOfType<NetworkManager>().numPlayers == 1 && hasFought)
-        //{
-        //    ShutDownNetwork();
-        //    Destroy(GameObject.Find("NetworkManager"));
-        //    SceneManager.LoadScene("Win");
-        //}
     }
 
     void ShoppingPause()

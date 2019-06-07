@@ -12,14 +12,6 @@ public class BulletController : NetworkBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         rb.velocity = bulletVelocity * Time.deltaTime * 1;
-        //if (GetBulletSpeed() == 0)
-        //{
-        //    Invoke("CmdDestoryBullet", 0.5f);
-        //}
-        //else
-        //{
-        //    Invoke("CmdDestoryBullet", 10);
-        //}
     }
 
     private void Update()
@@ -56,19 +48,4 @@ public class BulletController : NetworkBehaviour
         GameObject.Find(_playerID).GetComponent<PlayerController>().TakeDamage(_playerID);
 
     }
-
-    //float GetBulletSpeed()
-    //{
-    //    if (this.CompareTag("MeleeWeapon"))
-    //    {
-    //        return 0;
-    //    }
-    //    return 3;   //  need to change for each weapon later
-    //}
-
-    //[Command]
-    //void CmdDestoryBullet()
-    //{
-    //    NetworkServer.Destroy(this.gameObject);
-    //}
 }
