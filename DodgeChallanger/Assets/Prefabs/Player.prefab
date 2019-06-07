@@ -156,19 +156,22 @@ MonoBehaviour:
   Pan: {fileID: 6176924220508084337, guid: f86a66655a95c974d9cadac67ea3a14f, type: 3}
   P92: {fileID: 9160778004656585601, guid: ab8dff36ec0dd734d9e80a6ee847846c, type: 3}
   P1911: {fileID: 9160778004656585601, guid: 323049f56e251214294849cdcd59465a, type: 3}
-  S686: {fileID: 0}
+  S686: {fileID: 9160778004656585601, guid: f3640658e34d9ad45a9fab2c03ccfcb9, type: 3}
   M416: {fileID: 9160778004656585601, guid: 07464953187d833458aa212554b5f70a, type: 3}
   Kar98k: {fileID: 9160778004656585601, guid: cb4f2851f08c9344484ca6aea30bbcfc, type: 3}
   AWM: {fileID: 9160778004656585601, guid: 7853bcc3c638b1d48b0271301a833c30, type: 3}
   currentWeapon: {fileID: 6176924220508084337, guid: f1063ac1e5e249b4e87aee7f60814b4b,
     type: 3}
   moveSpeed: 3
-  bulletLeft: 7
-  maxBulletNum: 7
+  bulletLeft: 999
+  maxBulletNum: 999
   bulletSpeed: 3
   isDodging: 0
   damage: 1
-  hasGun: 0
+  GameOverPanelWin: {fileID: 975553382079600180, guid: 12da559093c99f2469a2064fe0fcbe1f,
+    type: 3}
+  GameOverPanelLose: {fileID: 975553382079600180, guid: 450fd04e5020b7846b9e9bacb152b3af,
+    type: 3}
 --- !u!114 &3609066587887849014
 MonoBehaviour:
   m_ObjectHideFlags: 0

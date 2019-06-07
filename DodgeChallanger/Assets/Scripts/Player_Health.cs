@@ -67,4 +67,9 @@ public class Player_Health : NetworkBehaviour
         gold = g;
         SetGoldText();
     }
+
+    public int GetHealth()
+    {
+        return health;
+    }
 }

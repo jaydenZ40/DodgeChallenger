@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : NetworkBehaviour
 {
     public GameObject Knife, Pan, P92, P1911, S686, M416, Kar98k, AWM;
     public GameObject currentWeapon;
     public float moveSpeed = 3;
-    public int bulletLeft = 7;
-    public int maxBulletNum = 7;
+    public int bulletLeft = 999;
+    public int maxBulletNum = 999;
     public float bulletSpeed = 3;
     [SyncVar] public bool isDodging = false;
     public int damage = 1;
+    public GameObject GameOverPanelWin;
 
     private Rigidbody2D rb;
     private bool isReloading = false;
@@ -20,6 +23,7 @@ public class PlayerController : NetworkBehaviour
     private bool isAttackReady = true;
     private float timer = 0;
     private bool runOnce = true;
+    private bool hasFought = false;
 
     void Start()
     {
@@ -44,7 +48,7 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        if (runOnce)
+        if (runOnce && timer > 0.03f)    // not work in Awake or Start, but here is fine, don't know why
         {
             runOnce = false;
             SetSpawnPosition();
@@ -63,6 +67,8 @@ public class PlayerController : NetworkBehaviour
         Attack();
 
         Reload();
+
+        CheckWin();
     }
 
     void SetSpawnPosition()
@@ -119,8 +125,7 @@ public class PlayerController : NetworkBehaviour
             isAttackReady = true;
             timer = 0;
         }
-
-        // shoot outside the battleground
+        
         if (Input.GetKeyDown(KeyCode.Mouse0) && bulletLeft > 0 && !isShopping && !isDodging && isAttackReady)
         {
             CmdAttack(rb.transform.position + GetMouseDirection() * 1.5f, rb.position);
@@ -128,17 +133,10 @@ public class PlayerController : NetworkBehaviour
             LocalManager.instance.UpdateBulletNumber(bulletLeft, maxBulletNum);
             isAttackReady = false;
         }
-
-        //// use fist or knife, inside the battleground
-        //if (Input.GetKeyDown(KeyCode.Mouse0) && !isShopping && !isDodging && !hasGun && isAttackReady)
-        //{
-        //    CmdAttack2(rb.transform.position + GetMouseDirection() * 1.25f);
-        //    isAttackReady = false;
-        //}
     }
 
     [Command]
-    void CmdAttack(Vector3 spawnPos, Vector3 playerPos)    //  shoot bullets
+    void CmdAttack(Vector3 spawnPos, Vector3 playerPos)
     {
         GameObject go = Instantiate(currentWeapon, spawnPos, Quaternion.identity);
         if (go.CompareTag("MeleeWeapon"))
@@ -151,16 +149,23 @@ public class PlayerController : NetworkBehaviour
             go.GetComponent<Rigidbody2D>().velocity = (spawnPos - playerPos) * Time.deltaTime * bulletSpeed * 200;
             Destroy(go, 10f);
         }
-        NetworkServer.Spawn(go);
-    }
 
-    //[Command]
-    //void CmdAttack2(Vector3 pos)    // knife or pan
-    //{
-    //    GameObject go = Instantiate(currentWeapon, pos, Quaternion.identity);
-    //    Destroy(go, 0.5f);
-    //    NetworkServer.Spawn(go);
-    //}
+        NetworkServer.Spawn(go);
+
+
+        if (currentWeapon == S686)  //   three bullets per shoot
+        {
+            go = Instantiate(currentWeapon, spawnPos, Quaternion.AxisAngle(new Vector3(0, 0, 1), 0.1f));
+            go.GetComponent<Rigidbody2D>().velocity = (spawnPos - playerPos) * Time.deltaTime * bulletSpeed * 200;
+            Destroy(go, 10f);
+            NetworkServer.Spawn(go);
+
+            go = Instantiate(currentWeapon, spawnPos, Quaternion.AxisAngle(new Vector3(0, 0, 1), -0.1f));
+            go.GetComponent<Rigidbody2D>().velocity = (spawnPos - playerPos) * Time.deltaTime * bulletSpeed * 200;
+            Destroy(go, 10f);
+            NetworkServer.Spawn(go);
+        }
+    }
 
     void Reload()
     {
@@ -185,6 +190,34 @@ public class PlayerController : NetworkBehaviour
 
         Vector3 direction = new Vector2(mousePosition.x - rb.transform.position.x, mousePosition.y - rb.transform.position.y);
         return direction.normalized;
+    }
+
+    void CheckWin()
+    {
+        if (this.GetComponent<Player_Health>().GetHealth() <= 0)
+        {
+            LocalManager.instance.Lose();
+            hasFought = false;
+        }
+
+        if (GameObject.FindGameObjectsWithTag("Player").Length == 1 && hasFought)
+        {
+            ShutDownNetwork();
+            Destroy(GameObject.Find("NetworkManager"));
+            SceneManager.LoadScene("Win");
+        }
+
+        if (FindObjectOfType<NetworkManager>().numPlayers == 2)
+        {
+            hasFought = true;
+        }
+
+        //if (FindObjectOfType<NetworkManager>().numPlayers == 1 && hasFought)
+        //{
+        //    ShutDownNetwork();
+        //    Destroy(GameObject.Find("NetworkManager"));
+        //    SceneManager.LoadScene("Win");
+        //}
     }
 
     void ShoppingPause()
@@ -220,13 +253,13 @@ public class PlayerController : NetworkBehaviour
             case "Pan":
                 return 2f;
             case "P92":
-                return 0.5f;
+                return 1f;
             case "P1911":
-                return 0f;
+                return 0.25f;
             case "S686":
-                return 1.5f;
+                return 2.5f;
             case "M416":
-                return 0f;
+                return 0.25f;
             case "Kar98k":
                 return 3f;
             case "AWM":
@@ -318,5 +351,11 @@ public class PlayerController : NetworkBehaviour
                 go.GetComponent<Player_Health>().damage = 1;
                 break;
         }
+    }
+
+    public void ShutDownNetwork()
+    {
+        FindObjectOfType<NetworkManager>().StopServer();
+        FindObjectOfType<NetworkManager>().StopClient();
     }
 }
